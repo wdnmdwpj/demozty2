@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<script type="text/javascript" src="webjars/jquery/3.5.1/jquery.min.js" ></script>
+<script>
+    function userLogin(){
+        if(validateForm()===1){
+            $.ajax(
+                {
+
+                    type:"post",/*要求为String类型的参数，请求方式（post或get）默认为get。注意其他http请求方法，
+                                 例如put和delete也可以使用，但仅部分浏览器支持。*/
+                    url:'userLogin',/*要求为String类型的参数，（默认为当前页地址）发送请求的地址*/
+                    // contentType:"application/json",
+                    dataType:"json",
+                    data:$("#loginForm").serialize(),/*要求为Object或String类型的参数，发送到服务器的数据。如果已经不是字符串，将自动转
+            换为字符串格式。get请求中将附加在url后。防止这种自动转换，可以查看　　processData选项。对象必须为key/value格式，例如{foo1:"bar1"
+                ,foo2:"bar2"}转换为&foo1=bar1&foo2=bar2。如果是数组，JQuery将自动为不同值对应同一个名称。例如{foo:["bar1","bar2"]}
+            转换为&foo=bar1&foo=bar2。*/
+                    async:false,/*要求为Boolean类型的参数，默认设置为true，所有请求均为异步请求。如果需要发送同步请求，请将此选项设置为false
+        。注意，同步请求将锁住浏览器，用户其他操作必须等待请求完成才可以执行。*/
+                    success:function(result){
+                        if(result===0){
+                            alert("用户不存在！");
+                        }
+                        if(result===1){
+                            alert("用户名与密码不匹配");
+                        }
+                        if(result===2){
+                            alert("登陆成功");
+                        }
+                    },
+                    error: function(e) {
+                        alert("登陆失败")
+                    }
+                }
+            )
+        }
+        document.getElementById("userName").value="";
+        document.getElementById("password").value="";
+    }
+
+    function validateForm() {
+        let username = document.getElementById("userName").value;
+        let password = document.getElementById("password").value;
+        if (username == "" || password == "") {
+            alert("用户名或密码不可为空");
+            return 0;
+        }
+        if(!isPassword(password)){
+            alert("密码应当为数字或字母");
+            return 0;
+        }
+        return 1;
+    }
+    function isPassword(val){
+        var regPos = /^[a-zA-Z0-9_-]+$/;
+        return regPos.test(val);
+    }
+</script>
+<body>
+<h1>Hello World! wpj</h1>
+<div>
+    <div>用户登陆</div>
+    <form id="loginForm" name="loginForm">
+        <div>
+            用户名<input type="text" id="userName" name="userName" />
+        </div>
+        <div>
+            密码<input type="password" id="password" name="password"/>
+        </div>
+        <div>
+            <input type="button" onclick="userLogin()" value="登陆"/>
+        </div>
+    </form>
+</div>
+</body>
+</html>
